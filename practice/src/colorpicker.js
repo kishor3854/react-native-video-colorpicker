@@ -8,6 +8,7 @@ import {
   FlatList,
   ActivityIndicator,
   Keyboard,
+  ScrollView,
 } from 'react-native';
 import {Row, Col, Grid} from 'react-native-easy-grid';
 import {
@@ -17,9 +18,10 @@ import {
 import {connect} from 'react-redux';
 import {colorActions} from './redux/color/reducer';
 import {bindActionCreators, Dispatch} from 'redux';
-import Video from './Video';
 
 let cId = 0;
+let touchId = 0;
+let newIndex = {};
 
 const colorpicker = props => {
   const [clr, setClr] = useState('rgb(223,235,111)');
@@ -28,10 +30,33 @@ const colorpicker = props => {
     if (props.data.length === 0) {
       props.getColor();
     }
+    // props.data.map(n => {
+    //   n['isSelect'] = false;
+    // });
+   
   });
 
-  const colorChange = (sideColor, index) => {
+  const colorChange = (sideColor, index,childIndex) => {
     cId = index;
+   
+    
+    if(!props.data[index-1].values[childIndex].isSelect){
+      for(var i=0;i<props.data.length;i++){
+        let item = props.data[i]
+        //console.log("array1",item);
+        
+        for(var j=0;j<item.values.length;j++){
+          let item2 = item.values[j]
+         // console.log("array2",item2);
+          item2.isSelect = false
+        }
+      }
+    }
+  
+
+    props.data[index-1].values[childIndex].isSelect = true
+   
+    console.log("array Index","===",props.data);
     setClr(sideColor);
   };
 
@@ -71,8 +96,6 @@ const colorpicker = props => {
           data={props.data}
           renderItem={({item, mainIndex}) => (
             <View style={styles.colorView}>
-              {console.log('item data', item.id)}
-
               <Grid>
                 <Col size={10} style={{backgroundColor: 'white'}}>
                   <View style={styles.leftView}>
@@ -119,11 +142,13 @@ const colorpicker = props => {
                     {item.values.map((keyItem, childIndex) => {
                       return (
                         <TouchableOpacity
-                          onPress={() => colorChange(keyItem.color, item.id)}>
+                          onPress={() =>
+                            colorChange(keyItem.color, item.id,childIndex)
+                          }>
                           <View
                             style={[
                               styles.smallBox,
-                              {backgroundColor: keyItem.color},
+                              {backgroundColor: keyItem.color,borderColor: keyItem.isSelect ? 'red' : 'transparent'},
                             ]}
                           />
 
@@ -144,6 +169,7 @@ const colorpicker = props => {
             </View>
           )}
           keyExtractor={(item, mainIndex) => item.id.toString()}
+         
         />
       </View>
     </View>
@@ -181,6 +207,8 @@ var styles = StyleSheet.create({
     marginLeft: wp('4.5%'),
     //    marginRight: 4,
     //backgroundColor: 'red',
+    //borderColor: 'red',
+    borderWidth: 2,
   },
 });
 

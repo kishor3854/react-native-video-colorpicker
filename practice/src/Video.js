@@ -8,6 +8,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import {Row, Col, Grid} from 'react-native-easy-grid';
+
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -16,7 +17,9 @@ import ImagePicker from 'react-native-image-picker';
 import VideoScreen from './VideoScreen';
 import PlaceHolderImage from './PlaceHolderImage';
 
-export default video = () => {
+const {sWidth, sHeight} = Dimensions.get('screen');
+
+export default Video = () => {
   const [imageSource, setImageSource] = useState(null);
 
   const selectPhoto = () => {
@@ -51,35 +54,34 @@ export default video = () => {
   return (
     <View style={{backgroundColor: '#f5f5f5', height: hp('100%')}}>
       <View style={{backgroundColor: '#dbdbdb', height: hp('15%')}}>
-        <Row style={{top: 80}}>
-          <Row>
-            <Col>
-              <Text style={{textAlign: 'left', fontSize: wp('3.50%')}}>
-                Today
-              </Text>
-              <Text
-                style={{
-                  textAlign: 'left',
-                  fontSize: wp('6%'),
-                  fontWeight: 'bold',
-                }}>
-                My Feed
-              </Text>
-            </Col>
+        
+            <Text
+              style={{top: hp('4%'), textAlign: 'left', fontSize: wp('3.50%')}}>
+              Today
+            </Text>
 
-            <Col>
-              <View style={styles.pickerCss}>
-                <TouchableOpacity onPress={selectPhoto}>
-                  <PlaceHolderImage
-                    source={imageSource}
-                    height={hp('6%')}
-                    width={wp('13%')}
-                  />
-                </TouchableOpacity>
-              </View>
-            </Col>
-          </Row>
-        </Row>
+          <View>
+            <Text
+              style={{
+                textAlign: 'left',
+                fontSize: wp('6%'),
+                fontWeight: 'bold',
+                top: hp('6%'),
+              }}>
+              My Feed
+            </Text>
+         
+            {/* <View style={styles.pickerCss}> */}
+              <TouchableOpacity onPress={selectPhoto}>
+                <PlaceHolderImage
+                  source={imageSource}
+                  height={hp('6%')}
+                  width={wp('14%')}
+                />
+              </TouchableOpacity>
+            {/* </View> */}
+         </View>
+         
       </View>
 
       <VideoScreen />
@@ -89,12 +91,14 @@ export default video = () => {
 
 var styles = StyleSheet.create({
   pickerCss: {
-    bottom: 2,
+    bottom: hp('2.5%'),
+    position: 'absolute',
     right: 5,
-    backgroundColor: 'white',
-    width: wp('13%'),
+    //backgroundColor: 'white',
+    width: wp('12%'),
     height: hp('6%'),
     alignSelf: 'flex-end',
-    borderRadius: 400,
+    borderRadius: 200,
+    justifyContent: 'center',
   },
 });

@@ -13,10 +13,14 @@ export const getVideosAsync = async () => {
 	await api
 		.get("/videos")
 		.then((apiResponse) => {
+			console.log("response.data-->",response.data);
 			if (apiResponse.ok) {
 				response.data = apiResponse.data;
+				
+				
 			} else {
 				response.error = "Unable to fetch new videos list.";
+				console.log("response.data false-->",response.data);
 			}
 		})
 		.catch((error) => {
@@ -35,6 +39,7 @@ export const getColorAsync = async () => {
 		.then((apiResponse) => {
 			if (apiResponse.ok) {
 				response.data = apiResponse.data;
+				console.log("response.data color-->",response.data);
 			} else {
 				response.error = "Unable to fetch new Color list.";
 			}

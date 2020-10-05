@@ -20,6 +20,9 @@ import {connect} from 'react-redux';
 import {videosActions} from './redux/video/reducer';
 import {bindActionCreators, Dispatch} from 'redux';
 
+let playButton = 0;
+let i = 0;
+
 class VideoScreen extends Component {
   constructor(props) {
     super(props);
@@ -36,16 +39,44 @@ class VideoScreen extends Component {
       isRefreshing: false,
       video: 0,
       data: this.props.data,
-      isLoading: false,
+      loadMore: false,
+      refreshing: false,
     };
   }
 
   componentDidMount() {
     if (this.props.data.length === 0) {
       this.props.getVideos();
-      this.setState({isLoading: true});
     }
+    this.props.data.map(n => {
+      n['isSelect'] = false;
+    });
   }
+
+  hello = () => {
+    this.state.data.push(...this.state.data), this.setState({loadMore: true});
+  };
+
+  renderMore = () => {
+    if (!this.state.loadMore) return null;
+
+    return (
+      <View
+        style={{
+          position: 'relative',
+          width: wp('90%'),
+          height: hp('90%'),
+          paddingVertical: 20,
+          borderTopWidth: 1,
+          marginTop: 10,
+          marginBottom: 10,
+          borderColor: 'red',
+          backgroundColor: 'whitesmoke',
+        }}>
+        <ActivityIndicator animating size="large" />
+      </View>
+    );
+  };
 
   shareVideo = async url => {
     try {
@@ -66,25 +97,31 @@ class VideoScreen extends Component {
     }
   };
 
-  goIndex = () => {
-    this.flatList_Ref.scrollToIndex({index: 1});
-  };
-
-  onPressBtnPlay() {
+  onPressBtnPlay(playIndex, id) {
+    console.log('playIndex ==== ', playIndex, id);
     var pausedText = '';
-    if (!this.state.paused) {
+    let item = this.state.data[playIndex];
+
+    
+    if(item.isSelect){
+      item.isSelect = false;
+    }else{
+      item.isSelect = true;
+    }
+
+    if (!item.isSelect) {
       pausedText = <Icon.Button name="ios-play" />;
+
       this.timeoutHandle = setTimeout(() => {
         this.setState({hideControls: true});
-      }, 2000);
+      }, 8000);
     } else {
       pausedText = <Icon.Button name="ios-pause" />;
-
-      // hide controls after 3s
       this.timeoutHandle = setTimeout(() => {
         this.setState({hideControls: true});
-      }, 2000);
+      }, 8000);
     }
+
     this.setState({paused: !this.state.paused, pausedText: pausedText});
   }
 
@@ -96,6 +133,14 @@ class VideoScreen extends Component {
       }, 2000);
     }
   }
+
+  refreshData = () => {
+    this.setState({refreshing: true});
+    this.props.getVideos();
+    this.setState({
+      refreshing: this.props.data ? false : true,
+    });
+  };
 
   render() {
     return this.props.isLoading ? (
@@ -117,13 +162,14 @@ class VideoScreen extends Component {
     ) : (
       <FlatList
         data={this.state.data}
+        onEndReached={this.hello}
         onEndReachedThreshold={0.5}
-        onMomentumScrollBegin={() => {
-          this.onEndReachedCalledDuringMomentum = false;
-        }}
-        ref={ref => {
-          this.flatList_Ref = ref;
-        }}
+        ListFooterComponent={this.renderMore}
+        showsVerticalScrollIndicator={false}
+        legacyImplementation={false}
+        onRefresh={this.refreshData}
+        refreshing={this.state.refreshing}
+        // onMomentumScrollBegin={() => { this.onEndReachedCalledDuringMomentum = false; }}
         renderItem={({item, index}) => (
           <View style={{marginTop: 20, marginBottom: 20, height: hp('30%')}}>
             <View style={styles.mainView}>
@@ -140,10 +186,7 @@ class VideoScreen extends Component {
                     onPress={() => this.onPressVideo()}>
                     <Video
                       source={{uri: item.video_url}}
-                      ref={ref => {
-                        this.player = ref;
-                      }}
-                      paused={this.state.paused}
+                      paused={!this.state.data[index].isSelect}
                       resizeMode={this.state.resizeMode}
                       style={styles.fullScreen}
                       onBuffer={this.onBuffer}
@@ -156,10 +199,13 @@ class VideoScreen extends Component {
 
                   {!this.state.hideControls ? (
                     <View
-                      onPress={() => this.onPressBtnPlay()}
+                      // onPress={() => this.onPressBtnPlay()}
                       style={{alignSelf: 'center', top: hp('10%')}}>
-                      <Icon.Button onPress={() => this.onPressBtnPlay()}>
-                        {this.state.pausedText}
+                      <Icon.Button
+                        onPress={() =>
+                          this.onPressBtnPlay(index, item.isSelect)
+                        }>
+                         {item.isSelect?<Icon.Button name="ios-pause" />:<Icon.Button name="ios-play" />}
                       </Icon.Button>
                     </View>
                   ) : null}
@@ -179,13 +225,13 @@ class VideoScreen extends Component {
                     style={{
                       color: 'black',
                       left: 10,
-                      top: 20,
+                      top: hp('2%'),
                       fontWeight: 'bold',
                       fontSize: 18,
                     }}>
                     {item.title}
                   </Text>
-                  <Text style={{color: 'red', left: 10, top: 25}}>
+                  <Text style={{color: 'red', left: 10, top: hp('2%')}}>
                     Simform company
                   </Text>
                 </View>
@@ -194,7 +240,7 @@ class VideoScreen extends Component {
           </View>
         )}
         keyExtractor={(item, index) => index.toString()}
-        onEndReached={this.goIndex}
+        // onEndReached={this.goIndex}
       />
     );
   }

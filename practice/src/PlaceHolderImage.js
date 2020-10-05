@@ -9,12 +9,15 @@ export default PlaceHolderImage = props => {
       style={{
         backgroundColor: '#EBF0FF',
         justifyContent: 'center',
-        alignItems: 'center',
+        //alignItems: 'center',
         height: props.height,
         width: props.width,
-        borderRadius: 600,
+        borderRadius:40,
         borderColor: '#0B6FA0',
+        right:5,
         borderWidth: 0.5,
+        position:'absolute',
+
       }}
     />
   );
