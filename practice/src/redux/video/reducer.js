@@ -28,7 +28,7 @@ const getVideos = (state) => {
 const getVideosSuccess = (state, response) => {
 	return {
 		...state,
-		data: response.data.videos,
+		data: response.data,
 		isLoading:false,
 	};
 };

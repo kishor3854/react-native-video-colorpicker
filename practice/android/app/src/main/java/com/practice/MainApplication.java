@@ -9,8 +9,8 @@ import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
-import com.brentvatne.react.ReactVideoPackage;
-import com.brentvatne.react.ReactVideoPackage;
+// import com.brentvatne.react.ReactVideoPackage;
+// import com.brentvatne.react.ReactVideoPackage;
 import com.imagepicker.ImagePickerPackage;
 import com.imagepicker.ImagePickerPackage;
 import com.imagepicker.ImagePickerPackage;
@@ -42,8 +42,8 @@ public class MainApplication extends Application implements ReactApplication {
             new VectorIconsPackage(),
             new VectorIconsPackage(),
             new VectorIconsPackage(),
-            new ReactVideoPackage())
-            packages.add(new ReactVideoPackage())
+            // new ReactVideoPackage())
+            // packages.add(new ReactVideoPackage())
           return packages;
         }
 
